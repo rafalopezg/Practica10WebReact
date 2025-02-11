@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchGames } from '../services/api';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const HomePage = () => {
   const [games, setGames] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [favorites, setFavorites] = useState([]); // Estado para los juegos favoritos
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadGames = async () => {
@@ -18,17 +23,19 @@ const HomePage = () => {
     game.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Función para manejar el click en el botón de favorito
+  const toggleFavorite = (gameId) => {
+    if (favorites.includes(gameId)) {
+      setFavorites(favorites.filter((id) => id !== gameId)); // Eliminar de favoritos
+    } else {
+      setFavorites([...favorites, gameId]); // Añadir a favoritos
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-gray-800 to-blue-900 text-white min-h-screen">
       {/* Encabezado */}
-      <header className="py-16 bg-opacity-70 shadow-xl">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl font-bold tracking-wide text-white drop-shadow-lg">
-            GameZone
-          </h1>
-          <p className="mt-4 text-lg text-gray-300">Descubre tus juegos favoritos</p>
-        </div>
-      </header>
+      <Header />
 
       {/* Barra de Búsqueda */}
       <section className="mt-12 text-center">
@@ -48,8 +55,22 @@ const HomePage = () => {
           {filteredGames.map((game) => (
             <div
               key={game.id}
-              className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl"
+              className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl relative"
             >
+              {/* Botón de Favorito (Corazón) */}
+              <button
+              onClick={() => toggleFavorite(game.id)}
+              className={`absolute top-4 right-4 text-3xl transition duration-300 z-10 ${
+                favorites.includes(game.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+              }`}
+            >
+              {favorites.includes(game.id) ? '❤️' : '🤍'}
+            </button>
+            
+            
+            
+            
+            
               <img
                 src={game.background_image}
                 alt={game.name}
@@ -64,6 +85,17 @@ const HomePage = () => {
                 <p className="mt-2 text-lg font-semibold text-yellow-400">
                   ⭐ {game.rating.toFixed(1)} / 5
                 </p>
+                
+                {/* Botón de Detalles */}
+                <button
+                onClick={() => navigate(`/game/${game.id}`)}
+                className="mt-4 text-blue-500 hover:text-blue-900 font-semibold transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                style={{ background: 'transparent', border: 'none' }} // Eliminar fondo y borde
+              >
+                Ver detalles
+              </button>
+              
+              
               </div>
             </div>
           ))}
@@ -71,9 +103,7 @@ const HomePage = () => {
       </section>
 
       {/* Pie de Página */}
-      <footer className="bg-black bg-opacity-70 py-6 text-center text-gray-400">
-        <p>&copy; 2025 GameZone. Todos los derechos reservados.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

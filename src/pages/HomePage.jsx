@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchGames } from '../services/api';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const HomePage = () => {
   const [games, setGames] = useState([]);
@@ -23,14 +25,7 @@ const HomePage = () => {
   return (
     <div className="bg-gradient-to-br from-gray-800 to-blue-900 text-white min-h-screen">
       {/* Encabezado */}
-      <header className="py-16 bg-opacity-70 shadow-xl">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl font-bold tracking-wide text-white drop-shadow-lg">
-            GameZone
-          </h1>
-          <p className="mt-4 text-lg text-gray-300">Descubre tus juegos favoritos</p>
-        </div>
-      </header>
+      <Header />
 
       {/* Carrusel de Juegos Populares */}
       <section className="mt-12 text-center">
@@ -47,7 +42,7 @@ const HomePage = () => {
       </section>
 
       {/* Funcionalidades */}
-      <section className="mt-16 text-center">
+      <section className="mt-16 text-center mb-">
         <h2 className="text-2xl sm:text-3xl font-semibold text-blue-400">Explora y Busca Juegos</h2>
         <p className="mt-4 text-lg text-gray-300">
           Usa nuestro buscador para encontrar juegos específicos o explora los más populares.
@@ -55,9 +50,7 @@ const HomePage = () => {
       </section>
 
       {/* Pie de Página */}
-      <footer className="bg-black bg-opacity-70 py-6 text-center text-gray-400">
-        <p>&copy; 2025 GameZone. Todos los derechos reservados.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

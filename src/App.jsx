@@ -11,7 +11,6 @@ const App = () => {
         {/* Menú de Navegación */}
         <nav className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
-            <h1 className="text-3xl font-bold">GameZone</h1>
             <div>
               <a href="/" className="mr-4 text-lg hover:text-blue-400">
                 Inicio

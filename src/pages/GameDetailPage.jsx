@@ -65,17 +65,17 @@ const GameDetailPage = () => {
               )}
             </div>
 
-            <div>
+            </div>
+            </div>
+            <div className='mt-5  '>
               <h2 className="text-2xl font-semibold text-blue-400">Descripción</h2>
               <p className="text-lg text-gray-300">{game.description_raw}</p>
             </div>
-          </div>
-        </div>
       </main>
 
       {/* Pie de Página */}
       <footer className="bg-gray-800 py-6 text-center text-gray-400">
-        <p>&copy; 2025 GameZone. Todos los derechos reservados.</p>
+        <p>&copy; 2025 GameZoneRLG. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
