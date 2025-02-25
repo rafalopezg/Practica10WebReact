@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { fetchGameDetail } from '../services/api';
 
 const GameDetailPage = () => {
@@ -28,7 +28,15 @@ const GameDetailPage = () => {
         <div className="container mx-auto text-center">
           <h1 className="text-5xl font-bold drop-shadow-lg">{game.name}</h1>
           <p className="mt-4 text-xl text-gray-300">
-            {game.genres && game.genres.map((genre) => genre.name).join(', ')}
+            {game.genres && game.genres.map((genre) => (
+              <Link
+                key={genre.id}
+                to={`/tags/${genre.slug}`}
+                className="text-blue-300 hover:text-blue-500 mr-2 underline"
+              >
+                {genre.name}
+              </Link>
+            ))}
           </p>
         </div>
       </header>
@@ -65,12 +73,45 @@ const GameDetailPage = () => {
               )}
             </div>
 
+            <div>
+              <h2 className="text-2xl font-semibold text-blue-400">Publisher</h2>
+              {game.publishers && game.publishers.length > 0 ? (
+                <Link
+                  to={`/publishers/${game.publishers[0].id}`}
+                  className="text-blue-300 hover:text-blue-500 underline text-xl"
+                >
+                  {game.publishers[0].name}
+                </Link>
+              ) : (
+                <p className="text-xl">Publisher no disponible</p>
+              )}
             </div>
+
+            <div>
+              <h2 className="text-2xl font-semibold text-blue-400">Tags</h2>
+              <div className="flex flex-wrap gap-2">
+                {game.tags && game.tags.length > 0 ? (
+                  game.tags.map((tag) => (
+                    <Link
+                      key={tag.id}
+                      to={`/tags/${tag.slug}`}
+                      className="bg-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+                    >
+                      {tag.name}
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-xl">Tags no disponibles</p>
+                )}
+              </div>
             </div>
-            <div className='mt-5  '>
-              <h2 className="text-2xl font-semibold text-blue-400">Descripción</h2>
-              <p className="text-lg text-gray-300">{game.description_raw}</p>
-            </div>
+          </div>
+        </div>
+
+        <div className="mt-5">
+          <h2 className="text-2xl font-semibold text-blue-400">Descripción</h2>
+          <p className="text-lg text-gray-300">{game.description_raw}</p>
+        </div>
       </main>
 
       {/* Pie de Página */}

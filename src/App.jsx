@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import GamesPage from './pages/GamesPage';
 import GameDetailPage from './pages/GameDetailPage';
@@ -12,12 +12,12 @@ const App = () => {
         <nav className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
             <div>
-              <a href="/" className="mr-4 text-lg hover:text-blue-400">
+              <Link to="/" className="mr-4 text-lg hover:text-blue-400">
                 Inicio
-              </a>
-              <a href="/games" className="mr-4 text-lg hover:text-blue-400">
+              </Link>
+              <Link to="/games" className="mr-4 text-lg hover:text-blue-400">
                 Todos los Juegos
-              </a>
+              </Link>
             </div>
           </div>
         </nav>
