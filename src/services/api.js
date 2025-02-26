@@ -1,45 +1,64 @@
 // API key directamente en el código (no recomendado para producción)
 const API_KEY = '2f34be5d025644d3a4a7d9fe51174531';
 
-// Función para obtener los juegos, con soporte para búsqueda y paginación
-const fetchGames = async (query = "", page = 1) => {
+export const fetchGames = async (page = 1, pageSize = 12) => {
   try {
-    const url = query
-      ? `https://api.rawg.io/api/games?key=${API_KEY}&search=${query}&page=${page}`
-      : `https://api.rawg.io/api/games?key=${API_KEY}&page=${page}`;
-    
-    const response = await fetch(url);
-    
-    // Verificar si la respuesta es exitosa
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data.results; // Devuelve los juegos encontrados
-  } catch (error) {
-    console.error('Error al obtener los juegos:', error);
-    return []; // Retorna un array vacío si ocurre un error
-  }
-};
+    const response = await fetch(`https://api.rawg.io/api/games?key=${API_KEY}&page=${page}&page_size=${pageSize}`)
 
-// Función para obtener los detalles de un juego específico
-const fetchGameDetail = async (id) => {
+    if (!response.ok) throw new Error(`Error: ${response.status}`)
+
+    const data = await response.json()
+    return {
+      results: data.results,
+      count: data.count,
+      next: data.next,
+      previous: data.previous,
+    }
+  } catch (error) {
+    console.error("Error fetching games:", error)
+    return { results: [], count: 0, next: null, previous: null }
+  }
+}
+
+export const fetchGamesByTag = async (tag, page = 1, pageSize = 12) => {
   try {
-    const response = await fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`);
-    
-    // Verificar si la respuesta es exitosa
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data; // Devuelve los detalles del juego
-  } catch (error) {
-    console.error('Error al obtener el detalle del juego:', error);
-    return null; // Retorna null si ocurre un error
-  }
-};
+    const response = await fetch(
+      `https://api.rawg.io/api/games?key=${API_KEY}&tags=${tag}&page=${page}&page_size=${pageSize}`,
+    )
 
-// Exporta las funciones
-export { fetchGames, fetchGameDetail };
+    if (!response.ok) throw new Error(`Error: ${response.status}`)
+
+    const data = await response.json()
+    return {
+      results: data.results,
+      count: data.count,
+      next: data.next,
+      previous: data.previous,
+    }
+  } catch (error) {
+    console.error("Error fetching games by tag:", error)
+    return { results: [], count: 0, next: null, previous: null }
+  }
+}
+
+export const fetchPublisherDetails = async (id) => {
+  try {
+    const response = await fetch(`https://api.rawg.io/api/publishers/${id}?key=${API_KEY}`)
+    if (!response.ok) throw new Error(`Error: ${response.status}`)
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching publisher details:", error)
+    return null
+  }
+}
+
+export const fetchGameDetail = async (id) => {
+  try {
+    const response = await fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
+    if (!response.ok) throw new Error(`Error: ${response.status}`)
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching game details:", error)
+    return null
+  }
+}
