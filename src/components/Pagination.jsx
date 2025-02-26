@@ -4,7 +4,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          className="px-4 py-2 text-blue-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
         >
           Anterior
         </button>
@@ -16,7 +16,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          className="px-4 py-2  text-blue-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
         >
           Siguiente
         </button>

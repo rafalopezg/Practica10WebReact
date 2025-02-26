@@ -79,13 +79,13 @@ const GamesPage = () => {
                     <button
                       key={tag.id}
                       onClick={() => navigate(`/tags/${tag.slug}`)}
-                      className="px-2 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
+                      className="px-2 py-1 bg-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-700 transition"
                     >
                       {tag.name}
                     </button>
                   ))}
                 </div>
-                <p className="mt-2 text-gray-300">{game.genres?.map((genre) => genre.name).join(", ")}</p>
+                <p className="mt-2 ">{game.genres?.map((genre) => genre.name).join(", ")}</p>
                 <button
                   onClick={() => navigate(`/game/${game.id}`)}
                   className="mt-4 text-blue-500 hover:text-blue-400 transition"
