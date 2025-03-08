@@ -1,109 +1,72 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
-import { fetchGames } from "../services/api"
-import Header from "../components/Header"
-import Footer from "../components/Footer"
-import Pagination from "../components/Pagination"
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchGamesByTag } from "../services/api";
+import "../index.css"; 
 
 const GamesPage = () => {
-  const [games, setGames] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [favorites, setFavorites] = useState([])
-  const [totalPages, setTotalPages] = useState(1)
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const currentPage = Number(searchParams.get("page")) || 1
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { tag } = useParams(); // Obtenemos el tag desde la URL
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadGames = async () => {
-      const data = await fetchGames(currentPage)
-      setGames(data.results)
-      setTotalPages(Math.ceil(data.count / 12))
-    }
-    loadGames()
-  }, [currentPage])
+    const loadGamesByTag = async () => {
+      try {
+        setLoading(true);
+        const { results } = await fetchGamesByTag(tag); // Llamada API
+        console.log("Juegos recibidos:", results); // Verificamos los juegos que recibimos
+        setGames(results);
+      } catch (error) {
+        console.error("Error al cargar los juegos por etiqueta:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadGamesByTag();
+  }, [tag]);
 
-  const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage })
-    window.scrollTo(0, 0)
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white text-2xl bg-gray-900">
+        Cargando juegos por etiqueta...
+      </div>
+    );
   }
 
-  const toggleFavorite = (gameId) => {
-    setFavorites((prev) => (prev.includes(gameId) ? prev.filter((id) => id !== gameId) : [...prev, gameId]))
+  if (games.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white text-2xl bg-gray-900">
+        No se encontraron juegos para esta etiqueta.
+      </div>
+    );
   }
-
-  const filteredGames = games.filter((game) => game.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
-    <div className="bg-gradient-to-br from-gray-800 to-blue-900 text-white min-h-screen">
-      <Header />
-
-      <section className="mt-12 text-center">
-        <input
-          type="text"
-          placeholder="Buscar juegos..."
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-          className="p-2 w-full md:w-1/2 mx-auto rounded-lg border-2 border-blue-500 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </section>
-
-      <section className="mt-16 text-center container mx-auto px-4">
-        <h2 className="text-3xl font-semibold text-blue-400 mb-8">Juegos Recomendados</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredGames.map((game) => (
-            <div
-              key={game.id}
-              className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl relative"
-            >
-              <button
-                onClick={() => toggleFavorite(game.id)}
-                className={`absolute top-4 right-4 text-3xl transition duration-300 z-10 ${
-                  favorites.includes(game.id) ? "text-red-500" : "text-gray-500 hover:text-red-500"
-                }`}
-              >
-                {favorites.includes(game.id) ? "❤️" : "🤍"}
-              </button>
-
-              <img
-                src={game.background_image || "/placeholder.svg"}
-                alt={game.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-2xl font-bold text-blue-400">{game.name}</h3>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {game.tags?.slice(0, 3).map((tag) => (
-                    <button
-                      key={tag.id}
-                      onClick={() => navigate(`/tags/${tag.slug}`)}
-                      className="px-2 py-1 bg-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-700 transition"
-                    >
-                      {tag.name}
-                    </button>
-                  ))}
-                </div>
-                <p className="mt-2 ">{game.genres?.map((genre) => genre.name).join(", ")}</p>
-                <button
-                  onClick={() => navigate(`/game/${game.id}`)}
-                  className="mt-4 text-blue-500 hover:text-blue-400 transition"
-                >
-                  Ver detalles
-                </button>
-              </div>
+    <div className="container mx-auto px-6 py-12 bg-gray-900">
+      <h1 className="text-4xl font-semibold text-blue-400 text-center mb-8">{tag}</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {games.map((game) => (
+          <div
+            key={game.id}
+            className="bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+            onClick={() => navigate(`/game/${game.id}`)}
+          >
+            <img
+              src={game.background_image || "/placeholder.svg"}
+              alt={game.name}
+              className="w-full h-64 object-cover transform transition duration-300 hover:scale-110"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-blue-400 mb-2">{game.name}</h3>
+              <p className="text-gray-300 text-base">
+                <span className="font-semibold">Rating:</span> {game.rating}/5 ({game.ratings_count} reviews)
+              </p>
             </div>
-          ))}
-        </div>
-
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-      </section>
-
-      <Footer />
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default GamesPage
-
+export default GamesPage;

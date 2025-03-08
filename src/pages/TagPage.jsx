@@ -6,6 +6,7 @@ import { fetchGamesByTag } from "../services/api"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import Pagination from "../components/Pagination"
+import '../index.css'; 
 
 const TagPage = () => {
   const { slug } = useParams()
