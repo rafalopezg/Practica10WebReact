@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchGames } from "../services/api";
 import "../index.css";
+import { fetchEvents, addEvent } from "../slices/eventSlice";
 
 
 const HomePage = () => {
